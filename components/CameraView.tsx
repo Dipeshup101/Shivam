@@ -1,123 +1,141 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Platform, Alert } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState, useRef } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
   onClose: () => void;
 }
 
-export default function CameraView({ onCapture, onClose }: CameraViewProps) {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [type, setType] = useState<CameraType>(CameraType.back);
-  const cameraRef = useRef<Camera | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
-
-  const takePicture = async () => {
-    if (!cameraRef.current) {
-      Alert.alert('Error', 'Camera not ready');
-      return;
-    }
-
-    try {
-      const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.5,
-        base64: true,
-        exif: false
-      });
-      onCapture(photo.uri);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to take picture');
-      console.error(error);
-    }
-  };
+const CameraView: React.FC<CameraViewProps> = ({ onCapture, onClose }) => {
+  const [type, setType] = useState(CameraType.back);
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
+  const cameraRef = useRef<Camera>(null);
 
   const toggleCameraType = () => {
-    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+    setType(current => 
+      current === CameraType.back ? CameraType.front : CameraType.back
+    );
   };
 
-  // Show loading state while checking permissions
-  if (hasPermission === null) {
-    return (
-      <View className="flex-1 items-center justify-center bg-black">
-        <Text className="text-white">Requesting camera permission...</Text>
-      </View>
+  const toggleFlash = () => {
+    setFlash(current => 
+      current === Camera.Constants.FlashMode.off 
+        ? Camera.Constants.FlashMode.on 
+        : Camera.Constants.FlashMode.off
     );
-  }
+  };
 
-  // Show error if permission denied
-  if (hasPermission === false) {
-    return (
-      <View className="flex-1 items-center justify-center bg-black">
-        <Text className="text-white mb-4">No access to camera</Text>
-        <TouchableOpacity 
-          onPress={onClose}
-          className="bg-white px-4 py-2 rounded"
-        >
-          <Text>Close Camera</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  if (Platform.OS === 'web') {
-    return (
-      <View className="flex-1 bg-black items-center justify-center">
-        <Text className="text-white text-lg">
-          Camera is not supported in web browser
-        </Text>
-        <TouchableOpacity
-          onPress={onClose}
-          className="mt-4 bg-white rounded-lg px-4 py-2"
-        >
-          <Text>Close</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync({
+          quality: 0.8,
+          base64: false,
+        });
+        onCapture(photo.uri);
+      } catch (error) {
+        console.error('Error taking picture:', error);
+      }
+    }
+  };
 
   return (
-    <View className="flex-1 bg-black">
-      <Camera 
+    <View style={styles.container}>
+      <Camera
         ref={cameraRef}
         type={type}
-        className="flex-1"
+        flashMode={flash}
+        style={styles.camera}
       >
-        <View className="flex-1">
-          <View className="flex-row justify-between items-center px-4 pt-12">
-            <TouchableOpacity 
-              onPress={onClose}
-              className="p-2"
-            >
-              <MaterialCommunityIcons name="close" size={32} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={toggleCameraType}
-              className="p-2"
-            >
-              <MaterialCommunityIcons name="camera-flip" size={32} color="white" />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={onClose}
+            style={styles.headerButton}
+          >
+            <MaterialCommunityIcons name="close" size={24} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={toggleFlash}
+            style={styles.headerButton}
+          >
+            <MaterialCommunityIcons 
+              name={flash === Camera.Constants.FlashMode.on ? "flash" : "flash-off"} 
+              size={24} 
+              color="white" 
+            />
+          </TouchableOpacity>
+        </View>
 
-          <View className="flex-1 justify-end pb-10">
-            <View className="flex-row justify-center">
-              <TouchableOpacity
-                onPress={takePicture}
-                className="w-20 h-20 bg-white rounded-full items-center justify-center"
-              >
-                <View className="w-16 h-16 bg-white rounded-full border-4 border-gray-800" />
-              </TouchableOpacity>
-            </View>
-          </View>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            onPress={toggleCameraType}
+            style={styles.footerButton}
+          >
+            <MaterialCommunityIcons name="camera-flip" size={28} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            onPress={takePicture}
+            style={styles.captureButton}
+          >
+            <View style={styles.captureInner} />
+          </TouchableOpacity>
+          
+          <View style={styles.placeholder} />
         </View>
       </Camera>
     </View>
   );
-} 
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  camera: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
+  },
+  headerButton: {
+    padding: 10,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 20,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+  },
+  footerButton: {
+    padding: 10,
+  },
+  captureButton: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  captureInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'white',
+  },
+  placeholder: {
+    width: 48,
+    height: 48,
+  },
+});
+
+export default CameraView; 

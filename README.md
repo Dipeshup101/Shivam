@@ -1,50 +1,105 @@
-# Welcome to your Expo app 👋
+# Derma Analyzer - Skin Disease Detection App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile application for skin disease detection and analysis using image processing and AI.
 
-## Get started
+## Setup Instructions
 
-1. Install dependencies
+### Frontend Setup
 
-   ```bash
+1. Install dependencies:
+   ```
    npm install
    ```
 
-2. Start the app
-
-   ```bash
-    npx expo start
+2. Start the development server:
+   ```
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+3. If you're experiencing TypeScript errors:
+   ```
+   npm run clear-cache
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Backend Setup
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Navigate to the server directory:
+   ```
+   cd server
+   ```
 
-## Get a fresh project
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-When you're ready, run:
+3. Update the `.env` file in the server directory with your Gmail credentials:
+   ```
+   EMAIL_USER=your_gmail_address@gmail.com
+   EMAIL_PASS=your_app_password
+   PORT=5000
+   ```
+   
+   Note: For Gmail, you'll need to use an App Password. To generate one:
+   - Enable 2-Step Verification in your Google Account
+   - Go to Security → App passwords
+   - Generate a new app password for "Mail" and "Other"
+   - Use this password in the .env file
 
-```bash
-npm run reset-project
-```
+4. Start the backend server:
+   ```
+   npm run dev
+   ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+5. Test the email functionality directly:
+   - Open `server/test-email.html` in a browser
+   - Enter your email and click "Test Server Connection"
+   - If successful, click "Send Test Email"
 
-## Learn more
+## Troubleshooting
 
-To learn more about developing your project with Expo, look at the following resources:
+### Email Issues
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+If you're experiencing problems with email sending:
 
-## Join the community
+1. **Check server status**: Make sure the server is running at http://localhost:5000. Try accessing this URL in your browser to verify.
 
-Join our community of developers creating universal apps.
+2. **Test the email directly**: Use the `server/test-email.html` file to test the email sending functionality outside the app.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. **Check email credentials**: Verify your Gmail credentials in the `.env` file. Make sure:
+   - You're using an App Password, not your regular password
+   - 2-Step Verification is enabled on your Google account
+   - The email and password are correct
+
+4. **Debug with console logs**: Check server console for detailed logs. You should see:
+   - Connection to SMTP server
+   - Request data from the app
+   - PDF generation messages
+   - Email sending confirmation
+
+5. **Network issues**: If using a physical device, make sure to update the `BACKEND_URL` in `services/emailService.ts` with your computer's local IP address.
+
+### Frontend Issues
+
+If you're seeing TypeScript/JSX errors:
+
+1. Clear the cache and restart:
+   ```
+   npm run clear-cache
+   ```
+
+2. Make sure the server is running before testing email functionality.
+
+3. If needed, run the TypeScript compiler to check errors:
+   ```
+   npm run tsc
+   ```
+
+### Connection Issues
+
+If the app cannot connect to the backend:
+
+1. Verify that both frontend and backend are running
+2. Check the `BACKEND_URL` in `services/emailService.ts`
+3. For Android emulator, use `10.0.2.2` instead of `localhost`
+4. For physical devices, use your computer's local IP address

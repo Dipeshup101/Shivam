@@ -441,47 +441,60 @@ const DoctorRecommendations = () => (
                 <View className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <TouchableOpacity
                     className="bg-indigo-600 rounded-lg p-4 items-center flex-row justify-center space-x-2"
-                    onPress={async () => {
-                      try {
-                        const user = await getCurrentUser();
-                        if (!user || !user.email) {
-                          Alert.alert('Error', 'Please login to send email reports');
-                          return;
-                        }
-                        
-                        Alert.alert(
-                          'Send Email Report',
-                          `Send analysis report to ${user.email}?`,
-                          [
-                            {
-                              text: 'Cancel',
-                              style: 'cancel'
-                            },
-                            {
-                              text: 'Send',
-                              onPress: async () => {
-                                try {
-                                  setIsAnalyzing(true);
-const { sendEmailReport } = await import('../services/emailService');
-                                  await sendEmailReport(user.email, {
-                                    results: analysisResult,
-                                    treatments: treatmentSuggestions
-                                  });
-                                  Alert.alert('Success', 'Report sent to your email');
-                                } catch (error) {
-                                  console.error('Failed to send email:', error);
-                                  Alert.alert('Error', 'Failed to send email report');
-                                } finally {
-                                  setIsAnalyzing(false);
+                    onPress={() => {
+                      (async () => {
+                        try {
+                          // Check if user is logged in and has email
+                          const user = await getCurrentUser();
+                          
+                          if (!user || !user.email) {
+                            Alert.alert('Error', 'Please login to send email reports');
+                            return;
+                          }
+                          
+                          Alert.alert(
+                            'Send Email Report',
+                            `Send analysis report to ${user.email}?`,
+                            [
+                              { text: 'Cancel', style: 'cancel' },
+                              { 
+                                text: 'Send', 
+                                onPress: async () => {
+                                  try {
+                                    setIsAnalyzing(true);
+                                    Alert.alert('Processing', 'Sending your report. This may take a few moments...');
+                                    
+                                    const sendEmailReport = require('../services/emailService').default;
+                                    
+                                    // Prepare email data
+                                    const emailData = {
+                                      results: analysisResult,
+                                      treatments: treatmentSuggestions || []
+                                    };
+                                    
+                                    // Send email
+                                    const result = await sendEmailReport(user.email, emailData);
+                                    
+                                    // Show success message
+                                    Alert.alert('Success', 'Report sent to your email successfully!');
+                                  } catch (error: any) {
+                                    console.error('Email error:', error.message);
+                                    Alert.alert(
+                                      'Email Error', 
+                                      `Failed to send email: ${error.message || 'Unknown error'}`
+                                    );
+                                  } finally {
+                                    setIsAnalyzing(false);
+                                  }
                                 }
                               }
-                            }
-                          ]
-                        );
-                      } catch (error) {
-                        console.error('Error preparing email:', error);
-                        Alert.alert('Error', 'Failed to prepare email report');
-                      }
+                            ]
+                          );
+                        } catch (error) {
+                          console.error('Error:', error);
+                          Alert.alert('Error', 'Failed to prepare email report');
+                        }
+                      })();
                     }}
                   >
                     <MaterialCommunityIcons name="email-send" size={24} color="white" />
