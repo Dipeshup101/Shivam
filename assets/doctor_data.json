@@ -1,0 +1,49 @@
+{
+  "doctors": [
+    {
+      "name": "Dr. Jaishree Noor",
+      "specialization": "Dermatologist",
+      "experience": "21 years",
+      "location": "Vasant Vihar, Delhi",
+      "clinic": "Tvak Laser Clinic",
+      "consultationFee": "₹1200",
+      "referralLink": "https://www.practo.com/delhi/doctor/dr-jaishree-noor-dermatologist?practice_id=1194048&specialization=Dermatologist&referrer=doctor_listing&page_uid=961d14ee-0df8-4e4b-9a40-13338c35a853"
+    },
+    {
+      "name": "Dr. S.K Kashyap",
+      "specialization": "Dermatologist", 
+      "experience": "21 years",
+      "location": "Vasant Vihar, Delhi",
+      "clinic": "Tvak Laser Clinic",
+      "consultationFee": "₹1200",
+      "referralLink": "https://www.practo.com/delhi/doctor/s-k-kashyap-dermatologist-cosmetologist?practice_id=1194048&specialization=Dermatologist&referrer=doctor_listing&page_uid=961d14ee-0df8-4e4b-9a40-13338c35a853"
+    },
+    {
+      "name": "Dr. Jatin Sidhwa",
+      "specialization": "Dermatologist",
+      "experience": "10 years", 
+      "location": "Vasant Kunj, Delhi",
+      "clinic": "SIDHWA SKIN CLINIC",
+      "consultationFee": "₹1000",
+      "referralLink": "https://www.practo.com/delhi/doctor/jatin-sidhwa-dermatologist?practice_id=1304755&specialization=Dermatologist&referrer=doctor_listing&page_uid=961d14ee-0df8-4e4b-9a40-13338c35a853"
+    },
+    {
+      "name": "Dr. Ranjan Upadhyay",
+      "specialization": "Dermatologist",
+      "experience": "21 years",
+      "location": "Vasant Kunj, Delhi", 
+      "clinic": "Desmoderm Skin & Laser Clinic",
+      "consultationFee": "₹2000",
+      "referralLink": "https://www.practo.com/delhi/doctor/dr-ranjan-upadhyay-dermatologist-cosmetologist-1-6350?practice_id=649436&specialization=Dermatologist&referrer=doctor_listing&page_uid=961d14ee-0df8-4e4b-9a40-13338c35a853"
+    },
+    {
+      "name": "Dr. Parineeta Maria",
+      "specialization": "Dermatologist",
+      "experience": "14 years",
+      "location": "Vasant Kunj, Delhi",
+      "clinic": "Kaya Clinic",
+      "consultationFee": "₹500",
+      "referralLink": "https://www.practo.com/delhi/doctor/dr-parineeta-maria-dermatologist?practice_id=925304&specialization=Dermatologist&referrer=doctor_listing&page_uid=961d14ee-0df8-4e4b-9a40-13338c35a853"
+    }
+  ]
+}
